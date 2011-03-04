@@ -1836,7 +1836,7 @@ function blocks_get_default_site_course_blocks() {
 function blocks_add_default_course_blocks($course) {
     global $CFG;
 
-    if (!empty($CFG->defaultblocks_override)) {
+    if (isset($CFG->defaultblocks_override)) {
         $blocknames = blocks_parse_default_blocks_list($CFG->defaultblocks_override);
 
     } else if ($course->id == SITEID) {
@@ -1844,7 +1844,7 @@ function blocks_add_default_course_blocks($course) {
 
     } else {
         $defaultblocks = 'defaultblocks_' . $course->format;
-        if (!empty($CFG->$defaultblocks)) {
+        if (isset($CFG->$defaultblocks)) {
             $blocknames = blocks_parse_default_blocks_list($CFG->$defaultblocks);
 
         } else {
@@ -1853,10 +1853,10 @@ function blocks_add_default_course_blocks($course) {
             if (is_readable($formatconfig)) {
                 include($formatconfig);
             }
-            if (!empty($format['defaultblocks'])) {
+            if (isset($format['defaultblocks'])) {
                 $blocknames = blocks_parse_default_blocks_list($format['defaultblocks']);
 
-            } else if (!empty($CFG->defaultblocks)){
+            } else if (isset($CFG->defaultblocks)){
                 $blocknames = blocks_parse_default_blocks_list($CFG->defaultblocks);
 
             } else {
