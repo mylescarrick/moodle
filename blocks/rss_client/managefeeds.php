@@ -116,7 +116,7 @@ foreach($feeds as $feed) {
         $feedtitle =  s($feed->title);
     }
 
-    $viewlink = html_writer::link($CFG->wwwroot .'/blocks/rss_client/viewfeed.php?rssid=' . $feed->id . $extraparams, $feedtitle);
+    $viewlink = html_writer::link(new moodle_url('/blocks/rss_client/viewfeed.php', array_merge(array('rssid'=>$feed->id), $urlparams)), $feedtitle);
 
     $feedinfo = '<div class="title">' . $viewlink . '</div>' .
         '<div class="url">' . html_writer::link($feed->url, $feed->url) .'</div>' .
