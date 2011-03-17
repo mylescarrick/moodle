@@ -53,14 +53,17 @@ if (!$managesharedfeeds) {
 $urlparams = array();
 if ($courseid) {
     $urlparams['courseid'] = $courseid;
-
 }
 if ($returnurl) {
     $urlparams['returnurl'] = $returnurl;
 }
 if ($blockid) {
     $urlparams['blockid'] = $blockid;
-    $editblockurl = new moodle_url('/course/view.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'bui_editid'=>$blockid));
+    if ($courseid) {
+        $editblockurl = new moodle_url('/course/view.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'bui_editid'=>$blockid));
+    } else {
+        $editblockurl = new moodle_url('/', array('sesskey'=>sesskey(), 'bui_editid'=>$blockid));
+    }
 }
 $PAGE->set_url('/blocks/rss_client/managefeeds.php', $urlparams);
 
