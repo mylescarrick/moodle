@@ -30,6 +30,7 @@ require_login();
 
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 $courseid = optional_param('courseid', 0, PARAM_INTEGER);
+$blockid = optional_param('blockid', 0, PARAM_INTEGER);
 $deleterssid = optional_param('deleterssid', 0, PARAM_INTEGER);
 
 if ($courseid == SITEID) {
@@ -50,14 +51,16 @@ if (!$managesharedfeeds) {
 }
 
 $urlparams = array();
-$extraparams = '';
 if ($courseid) {
     $urlparams['courseid'] = $courseid;
-    $extraparams = '&courseid=' . $courseid;
+
 }
 if ($returnurl) {
     $urlparams['returnurl'] = $returnurl;
-    $extraparams = '&returnurl=' . $returnurl;
+}
+if ($blockid) {
+    $urlparams['blockid'] = $blockid;
+    $editblockurl = new moodle_url('/course/view.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'bui_editid'=>$blockid));
 }
 $PAGE->set_url('/blocks/rss_client/managefeeds.php', $urlparams);
 
@@ -85,7 +88,11 @@ $PAGE->set_heading($strmanage);
 $settingsurl = new moodle_url('/admin/settings.php?section=blocksettingrss_client');
 $managefeeds = new moodle_url('/blocks/rss_client/managefeeds.php', $urlparams);
 $PAGE->navbar->add(get_string('blocks'));
-$PAGE->navbar->add(get_string('feedstitle', 'block_rss_client'), $settingsurl);
+if ($editblockurl) {
+    $PAGE->navbar->add(get_string('feedstitle', 'block_rss_client'), $editblockurl);
+} else {
+    $PAGE->navbar->add(get_string('feedstitle', 'block_rss_client'), $settingsurl);
+}
 $PAGE->navbar->add(get_string('managefeeds', 'block_rss_client'), $managefeeds);
 echo $OUTPUT->header();
 
@@ -115,10 +122,10 @@ foreach($feeds as $feed) {
         '<div class="url">' . html_writer::link($feed->url, $feed->url) .'</div>' .
         '<div class="description">' . $feed->description . '</div>';
 
-    $editurl = new moodle_url('/blocks/rss_client/editfeed.php?rssid=' . $feed->id . $extraparams);
+    $editurl = new moodle_url('/blocks/rss_client/editfeed.php?rssid=' . $feed->id, $urlparams);
     $editaction = $OUTPUT->action_icon($editurl, new pix_icon('t/edit', get_string('edit')));
 
-    $deleteurl = new moodle_url('/blocks/rss_client/managefeeds.php?deleterssid=' . $feed->id . '&sesskey=' . sesskey() . $extraparams);
+    $deleteurl = new moodle_url('/blocks/rss_client/managefeeds.php', array_merge(array('deleterssid'=>$feed->id, 'sesskey'=>sesskey()), $urlparams));
     $deleteicon = new pix_icon('t/delete', get_string('delete'));
     $deleteaction = $OUTPUT->action_icon($deleteurl, $deleteicon, new confirm_action(get_string('deletefeedconfirm', 'block_rss_client')));
 
@@ -129,9 +136,12 @@ foreach($feeds as $feed) {
 
 $table->print_html();
 
-$url = $CFG->wwwroot . '/blocks/rss_client/editfeed.php?' . substr($extraparams, 1);
+$url = new moodle_url('/blocks/rss_client/editfeed.php', $urlparams);
 echo '<div class="actionbuttons">' . $OUTPUT->single_button($url, get_string('addnewfeed', 'block_rss_client'), 'get') . '</div>';
 
+if ($editblockurl) {
+    $returnurl = $editblockurl;
+}
 
 if ($returnurl) {
     echo '<div class="backlink">' . html_writer::link($returnurl, get_string('back')) . '</div>';
