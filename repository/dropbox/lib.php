@@ -128,6 +128,7 @@ class repository_dropbox extends repository {
         if (empty($path) || $path=='/') {
             $path = '/';
         } else {
+            $path = str_replace("%2F", "/", rawurlencode($path));
             $path = file_correct_filepath($path);
         }
 
