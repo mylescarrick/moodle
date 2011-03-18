@@ -91,7 +91,7 @@ $PAGE->set_heading($strmanage);
 $settingsurl = new moodle_url('/admin/settings.php?section=blocksettingrss_client');
 $managefeeds = new moodle_url('/blocks/rss_client/managefeeds.php', $urlparams);
 $PAGE->navbar->add(get_string('blocks'));
-if ($editblockurl) {
+if ($blockid) {
     $PAGE->navbar->add(get_string('feedstitle', 'block_rss_client'), $editblockurl);
 } else {
     $PAGE->navbar->add(get_string('feedstitle', 'block_rss_client'), $settingsurl);
@@ -142,7 +142,7 @@ $table->print_html();
 $url = new moodle_url('/blocks/rss_client/editfeed.php', $urlparams);
 echo '<div class="actionbuttons">' . $OUTPUT->single_button($url, get_string('addnewfeed', 'block_rss_client'), 'get') . '</div>';
 
-if ($editblockurl) {
+if ($blockid) {
     $returnurl = $editblockurl;
 }
 
