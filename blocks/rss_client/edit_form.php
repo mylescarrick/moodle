@@ -31,7 +31,7 @@
  */
 class block_rss_client_edit_form extends block_edit_form {
     protected function specific_definition($mform) {
-        global $CFG, $DB, $USER;
+        global $CFG, $DB, $USER, $PAGE;
 
         // Fields for editing block contents.
         $mform->addElement('header', 'configheader', get_string('blocksettings', 'block'));
@@ -65,7 +65,7 @@ class block_rss_client_edit_form extends block_edit_form {
         }
 
         if (has_any_capability(array('block/rss_client:manageanyfeeds', 'block/rss_client:manageownfeeds'), $this->block->context)) {
-            $managefeedsurl = new moodle_url('/blocks/rss_client/managefeeds.php?', array('courseid'=>$this->page->course->id, 'blockid'=>$this->block->instance->id));
+            $managefeedsurl = new moodle_url('/blocks/rss_client/managefeeds.php?', array('returnurl'=>$PAGE->url, 'courseid'=>$this->page->course->id, 'blockid'=>$this->block->instance->id));
             $mform->addElement('static', 'nofeedmessage', '', html_writer::link($managefeedsurl, get_string('feedsaddedit', 'block_rss_client')) );
         }
 

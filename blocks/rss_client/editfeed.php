@@ -166,7 +166,8 @@ if (!$managesharedfeeds) {
     require_capability('block/rss_client:manageownfeeds', $context);
 }
 
-$urlparams = array('rssid' => $rssid);
+$urlparams = array('rssid' => $rssid,'sesskey'=>sesskey());
+
 if ($courseid) {
     $urlparams['courseid'] = $courseid;
 }
@@ -175,12 +176,8 @@ if ($returnurl) {
 }
 if ($blockid) {
     $urlparams['blockid'] = $blockid;
-    if ($courseid) {
-        $editblockurl = new moodle_url('/course/view.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'bui_editid'=>$blockid));
-    } else {
-        $editblockurl = new moodle_url('/', array('sesskey'=>sesskey(), 'bui_editid'=>$blockid));
-    }
 }
+$returnurl = new moodle_url($returnurl, $urlparams);
 
 $managefeeds = new moodle_url('/blocks/rss_client/managefeeds.php', $urlparams);
 
@@ -228,8 +225,8 @@ if ($mform->is_cancelled()) {
 
     $settingsurl = new moodle_url('/admin/settings.php?section=blocksettingrss_client');
     $PAGE->navbar->add(get_string('blocks'));
-    if ($editblockurl) {
-        $PAGE->navbar->add(get_string('feedstitle', 'block_rss_client'), $editblockurl);
+    if ($blockid) {
+        $PAGE->navbar->add(get_string('feedstitle', 'block_rss_client'), $returnurl);
     } else {
         $PAGE->navbar->add(get_string('feedstitle', 'block_rss_client'), $settingsurl);
     }
