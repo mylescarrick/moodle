@@ -81,6 +81,12 @@ class filter_mediaplugin extends moodle_text_filter {
 
         $newtext = $text; // we need to return the original value if regex fails!
 
+        // Filter out nolink elements
+        $filterignoretagsopen  = array('<span class="nolink">');
+        $filterignoretagsclose = array('</span>');
+
+        filter_save_ignore_tags($newtext,$filterignoretagsopen,$filterignoretagsclose,$ignoretags);
+
         // YouTube and Vimeo are great because the files are not served by Moodle server
 
         if (!empty($CFG->filter_mediaplugin_enable_youtube)) {
@@ -162,6 +168,10 @@ class filter_mediaplugin extends moodle_text_filter {
             return $text;
         }
 
+        // If we filtered out tags, bring them back
+        if (!empty($ignoretags)) {
+            $newtext = str_replace(array_keys($ignoretags),$ignoretags,$newtext);
+        }
 
         return $newtext;
     }
